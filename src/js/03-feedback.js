@@ -1,35 +1,37 @@
 import throttle from 'lodash.throttle';
 
-const LOCALSTORAGE_KEY = 'feedback-form-state';
-const formEl = document.querySelector('.feedback-form');
+const LOCAL_KEY = 'feedback-form-state';
 
-initForm();
+form = document.querySelector('.feedback-form');
 
-//formEl.addEventListener('submit', 'onFormSubmit');
-formEl.addEventListener('input', throttle(onFormInput, 500));
+form.addEventListener('input', throttle(onInputData, 500));
+form.addEventListener('submit', onFormSubmit);
 
-function onFormSubmit(evt) {
-    evt.preventDefault();
+let dataForm = JSON.parse(localStorage.getItem(LOCAL_KEY)) || {};
+const { email, message } = form.elements;
+reloadPage();
 
-    const formData = new FormData(formEl);
-    formData.forEach((value, name) => console.log(value, name));
-    evt.currentTarget.reset();
-    localStorage.removeItem(LOCALSTORAGE_KEY);
+function onInputData(e) {
+  dataForm = { email: email.value, message: message.value };
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(dataForm));
 }
 
-function onFormInput(evt) {
-    let persistedFilters = localStorage.getItem(LOCALSTORAGE_KEY);
-    persistedFilters = persistedFilters ? JSON.parse(persistedFilters) : {};
-    persistedFilters[evt.target.name] = evt.target.value;
-    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(persistedFilters));
+function reloadPage() {
+  if (dataForm) {
+    email.value = dataForm.email || '';
+    message.value = dataForm.message || '';
+  }
 }
 
-function initForm() {
-    let persistedFilters = localStorage.getItem(LOCALSTORAGE_KEY);
-    if (persistedFilters) {
-        persistedFilters = JSON.parse(persistedFilters);
-        Object.entries(persistedFilters).forEach(([name, value]) => {
-            formEl.elements[name].value = value;
-        });
-    }
+function onFormSubmit(e) {
+  e.preventDefault();
+  console.log({ email: email.value, message: message.value });
+
+  if (email.value === '' || message.value === '') {
+    return alert('Please fill in all the fields!');
+  }
+
+  localStorage.removeItem(LOCAL_KEY);
+  e.currentTarget.reset();
+  dataForm = {};
 }
