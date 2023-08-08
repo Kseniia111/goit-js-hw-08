@@ -17,23 +17,16 @@ function onInputData(e) {
 }
 
 function reloadPage() {
-  try {
-    let formLoad = JSON.parse(localStorage.getItem(LOCAL_KEY));
-    if (!formLoad) {
-      return;
-    }
-
-    data = formLoad;
-    form.email.value = data.email || '';
-    form.message.value = data.message || '';
-  } catch (error) {
-    console.error('Error.message ', error.message);
+if (dataForm) {
+    email.value = dataForm.email || '';
+    message.value = dataForm.message || '';
   }
 }
 
 function onFormSubmit(e) {
   e.preventDefault();
-  console.log({ email: email.value, message: message.value });
+  dataForm = { email: email.value, message: message.value };
+  //console.log({ email: email.value, message: message.value });
 
   if (email.value === '' || message.value === '') {
     return alert('Please fill in all the fields!');
@@ -41,7 +34,7 @@ function onFormSubmit(e) {
 
   localStorage.removeItem(LOCAL_KEY);
   e.currentTarget.reset();
-  dataForm = {};
+  dataForm = 0;
 }
 
     //Object.entries(dataForm).forEach(([name, value]) => {
@@ -53,3 +46,16 @@ function onFormSubmit(e) {
 //    message.value = dataForm.message || '';
 //  }
 //}
+
+ //try {
+  //  let formLoad = JSON.parse(localStorage.getItem(LOCAL_KEY));
+   // if (!formLoad) {
+  //    return;
+  //  }
+
+  //  data = formLoad;
+   // form.email.value = data.email || '';
+   // form.message.value = data.message || '';
+ // } catch (error) {
+//    console.error('Error.message ', error.message);
+//  }
