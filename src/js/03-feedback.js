@@ -9,7 +9,6 @@ form.addEventListener('submit', onFormSubmit);
 
 let dataForm = JSON.parse(localStorage.getItem(LOCAL_KEY)) || {};
 const { email, message } = form.elements;
-
 reloadPage();
 
 function onInputData(e) {
@@ -18,10 +17,17 @@ function onInputData(e) {
 }
 
 function reloadPage() {
-  if (dataForm) {
-    Object.entries(dataForm).forEach(([name, value]) => {
-      form.elements[name].value = value;
-    });
+  try {
+    let formLoad = JSON.parse(localStorage.getItem(LOCAL_KEY));
+    if (!formLoad) {
+      return;
+    }
+
+    data = formLoad;
+    form.email.value = data.email || '';
+    form.message.value = data.message || '';
+  } catch (error) {
+    console.error('Error.message ', error.message);
   }
 }
 
@@ -37,3 +43,13 @@ function onFormSubmit(e) {
   e.currentTarget.reset();
   dataForm = {};
 }
+
+    //Object.entries(dataForm).forEach(([name, value]) => {
+      //form.elements[name].value = value;
+
+      //{
+//  if (dataForm) {
+//    email.value = dataForm.email || '';
+//    message.value = dataForm.message || '';
+//  }
+//}
